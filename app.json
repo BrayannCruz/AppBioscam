@@ -14,10 +14,19 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "plugins": [
+      [
+        "expo-google-sign-in",
+        {"permisssions":["profile","email"]}
+      ]
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bioscamapp.appbioscam"
     },
     "android": {
+      "permissions": ["CAMERA"],
+      "package": "com.bioscamapp.appbioscam",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -25,6 +34,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "scheme":"appbioscam"
   }
 }
