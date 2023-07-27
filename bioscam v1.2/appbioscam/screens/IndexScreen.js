@@ -8,7 +8,9 @@ import {
   Alert,
   StyleSheet,
   Dimensions,
+  Image,
 } from "react-native";
+
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -83,7 +85,6 @@ function LoginScreen() {
       await handleGoogleSignIn();
     })();
   }, [response]);
-  
 
   async function handleGoogleSignIn() {
     const user = await AsyncStorage.getItem("@user");
@@ -113,92 +114,95 @@ function LoginScreen() {
 
   return (
     <SafeAreaProvider>
-    <View style={styles.container}>
-      <LinearGradient
-        // Style del contenedor
-        style={styles.background}
-        // Colores del gradiente
-        colors={["#26D0CE", "#1A2980"]}
-        // Posición de inicio y fin
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1.3 }}
-      >
-        <View style={styles.title}>
-          <Text
-            style={{
-              color: "#fff",
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: 40,
-              fontStyle: "italic",
-            }}
-          >
-            BIOSCAM
-          </Text>
-        </View>
-        <View style={styles.login}>
-          <View style={styles.signInContainer}>
+      <View style={styles.container}>
+        <LinearGradient
+          // Style del contenedor
+          style={styles.background}
+          // Colores del gradiente
+          colors={["#C9E8E0", "#82D0B9"]}
+          // Posición de inicio y fin
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1.8 }}
+        >
+          <View style={styles.title}>
             <Text
-              style={styles.signInText}
+              style={{
+                color: "#fff",
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 40,
+                fontStyle: "italic",
+              }}
             >
-              Iniciar Sesión
+              BIOSCAM
             </Text>
+            <Image
+              source={require("../assets/logo.png")}
+              style={styles.logo}
+            />
           </View>
-          <View>
+          <View style={styles.login}>
+            <View>
+              <TouchableOpacity
+                onPress={handleSignInSubmit}
+                style={[styles.button, { paddingLeft: 30 }]}
+              >
+                <View style={styles.buttonContent}>
+                  <Ionicons
+                    name="person-circle-outline"
+                    size={30}
+                    color="white"
+                    bottom={10}
+                  />
+                  <Text style={styles.iniciarsesionCC}>
+                    Correo y Contraseña
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                title={auth ? "Get User Data" : "Login"}
+                onPress={() => promptAsync()}
+                style={[styles.button, { paddingLeft: 30 }]}
+              >
+                <View style={styles.buttonContent}>
+                  <Ionicons
+                    name="logo-google"
+                    size={30}
+                    color="white"
+                    bottom={10}
+                  />
+                  <Text style={styles.iniciarsesionCC}>Cuenta de Google</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.signUpContainer}>
+              <Text style={styles.signUpText}>¿Aun no tiene Cuenta?</Text>
+            </View>
             <TouchableOpacity
-              onPress={handleSignInSubmit}
-              style={[styles.button, { paddingLeft: 30 }]}
+              onPress={handleCreateAccount}
+              style={styles.createAccountButton}
             >
-              <View style={styles.buttonContent}>
-                <Ionicons
-                  name="person-circle-outline"
-                  size={30}
-                  color="white"
-                  bottom = {10}
-                />
-                <Text style={styles.iniciarsesionCC}>
-                  Correo y Contraseña
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              title={auth ? "Get User Data" : "Login"}
-              onPress={() => promptAsync()}
-              style={[styles.button, { paddingLeft: 30 }]}
-            >
-              <View style={styles.buttonContent}>
-                <Ionicons name="logo-google" size={30} color="white" bottom = {10} />
-                <Text style={styles.iniciarsesionCC}>Cuenta de Google</Text>
-              </View>
+              <Text style={styles.createAccountText}>Registrarse</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.signUpContainer}>
-            <Text style={styles.signUpText}>
-              ¿Aun no tiene Cuenta?
-            </Text>
-          </View>
-          <TouchableOpacity
-            onPress={handleCreateAccount}
-            style={styles.createAccountButton}
-          >
-            <Text style={styles.createAccountText}>
-              Registrarse
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
-    </View>
-  </SafeAreaProvider>
+        </LinearGradient>
+      </View>
+    </SafeAreaProvider>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
   },
-  background: {
+  logo: {
+    width: 220, // change to desired width
+    height: 220, // change to desired height
+    alignSelf: "center",
+    borderWidth: 1, // add this line
+    borderRadius: 80,
+    marginTop: 45,
+  },
+background: {
     position: "absolute",
     left: 0,
     right: 0,
@@ -207,25 +211,23 @@ const styles = StyleSheet.create({
   },
   title: {
     backgroundColor: "#0D819D",
-    borderRadius: 200,
-    borderColor: "#fff",
+    borderRadius: 20,
     color: "#fff",
     width: 200,
     height: 60,
     alignSelf: "center",
-    marginTop: 120,  // Reemplazado 'top: 200' con margen en la parte superior
+    marginTop: 100,
   },
   login: {
     width: "100%", // Ajusta el ancho en función del tamaño de la pantalla
-    paddingHorizontal: 50,
-    paddingTop: 50,
-    alignItems: "center", // Centra horizontalmente los elementos
+    alignItems: "center", 
   },
   button: {
     backgroundColor: "#0D819D",
     marginBottom: 10,
-    borderRadius: 50,
+    borderRadius: 20,
     paddingTop: 20,
+    top: 300,
   },
   iniciarsesionCC: {
     color: "#FFFFFF",
@@ -234,9 +236,9 @@ const styles = StyleSheet.create({
     bottom: 10,
   },
   signInContainer: {
-    alignContent: "center", 
+    alignContent: "center",
     alignItems: "center",
-    marginVertical: 20,
+    marginVertical: 80,
   },
   signInText: {
     fontSize: 25,
@@ -244,14 +246,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   buttonContent: {
-    width : 250,
-    height : 30,
-    flexDirection: "row", 
+    width: 250,
+    height: 30,
+    flexDirection: "row",
     alignItems: "center",
   },
   signUpContainer: {
-    alignSelf: "center", 
+    alignSelf: "center",
     paddingTop: 30,
+    marginTop: 350,
   },
   signUpText: {
     fontSize: 14,
@@ -259,11 +262,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   createAccountButton: {
-    alignSelf: "center", 
-    width: 120, 
-    justifyContent: "center", 
+    alignSelf: "center",
+    width: 120,
+    justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,  // Añadido margen en la parte superior
+    marginTop: 20, // Añadido margen en la parte superior
   },
   createAccountText: {
     fontSize: 18,
@@ -271,6 +274,5 @@ const styles = StyleSheet.create({
     color: "#E02B2B",
   },
 });
-
 
 export default LoginScreen;

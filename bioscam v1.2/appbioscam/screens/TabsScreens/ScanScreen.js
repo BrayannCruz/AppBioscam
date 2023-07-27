@@ -18,6 +18,7 @@ const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 export default function CapturarIcon() {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const cameraRef = useRef(null);
 
@@ -60,18 +61,22 @@ export default function CapturarIcon() {
     <LinearGradient colors={["#84DCC6", "#1C2B2D"]} style={styles.inicio}>
       <CornerImages />
       <Text style={styles.title}>Título de tu aplicación</Text>
-      <View style={styles.cameraContainer}>
-        <Camera
-          ref={cameraRef}
-          style={styles.camera}
-          type={type}
-          onCameraReady={() => setIsCameraReady(true)}
-        />
-      </View>
-
-      <TouchableOpacity onPress={takePicture} style={styles.btnCapturar}>
-        <Text style={styles.capturar}>¡Comienza a escanear!</Text>
+      <TouchableOpacity onPress={() => setIsCameraOpen(!isCameraOpen)} style={styles.btnAbrir}>
+        <Text style={styles.abrir}>{isCameraOpen ? 'Cerrar cámara' : 'Abrir cámara'}</Text>
       </TouchableOpacity>
+      {isCameraOpen && (
+        <View style={styles.cameraContainer}>
+          <Camera
+            ref={cameraRef}
+            style={styles.camera}
+            type={type}
+            onCameraReady={() => setIsCameraReady(true)}
+          />
+          <TouchableOpacity onPress={takePicture} style={styles.btnCapturar}>
+            <Text style={styles.capturar}>¡Comienza a escanear!</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </LinearGradient>
   );
 }
@@ -101,8 +106,21 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  btnCapturar: {
+  btnAbrir: {
     padding: 15,
+    backgroundColor: "cadetblue",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  abrir: {
+    color: "white",
+    fontSize: 18,
+  },
+  btnCapturar: {
+    position: "absolute",
+    bottom: 0,
+    padding: 15,
+    width: "100%",
     backgroundColor: "cadetblue",
     alignItems: "center",
   },

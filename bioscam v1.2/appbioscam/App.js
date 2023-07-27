@@ -7,6 +7,9 @@ import CreateUser from './screens/CreateUserScreen';
 import { useEffect } from 'react';
 import RecoveryPassScreen from './screens/RecoveryPassScreen';
 import SignIn from './screens/LoginScreen';
+import ChangePasswordScreen from './screens/ChangePasswordScreen';
+import DeleteAccountScreen from './screens/DeleteAccountScreen';
+
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -17,6 +20,20 @@ export default function App() {
         <Stack.Screen name="MainLogin" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Registrarse" component={CreateUser} options={{ headerShown: false }} />
         <Stack.Screen name="Ingresar" component={SignIn} options={{ headerShown: false }}/>
+        <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ 
+          headerShown: true, 
+          headerStyle: {
+            backgroundColor: '#84DCC6', // color que quieras
+          },
+          headerTintColor: '#fff', // color del texto
+        }}/>
+        <Stack.Screen name="DeleteAccount" component={DeleteAccountScreen} options={{ 
+          headerShown: true, 
+          headerStyle: {
+            backgroundColor: '#84DCC6', // color que quieras
+          },
+          headerTintColor: '#fff', // color del texto
+        }}/>
         <Stack.Screen name="Home" component={HomeScreenWithTab} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>

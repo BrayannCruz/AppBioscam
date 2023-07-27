@@ -86,7 +86,7 @@ const SignIn = () => {
       end={{ x: 0, y: 1.3 }}
     >
       <View>
-        <Text style={styles.title}>Iniciar Sesion</Text>
+        <Text style={styles.title}>¡Inicia Sesión!</Text>
       </View>
 
       <View style={styles.inputContainer}>
@@ -113,17 +113,14 @@ const SignIn = () => {
           autoCorrect={false}
         />
       </View>
-
-      <View style={styles.recoverContainer}>
-        <Text style={styles.label}>¿Olvido su contraseña?</Text>
-        <TouchableOpacity onPress={handlePassRecover}>
-          <Text style={styles.recoverButton}>Recuperar</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={handleSignInSubmit}>
+          <Text style={styles.button}>Ingresar</Text>
         </TouchableOpacity>
       </View>
-
-      <View style={styles.signInContainer}>
-        <TouchableOpacity onPress={handleSignInSubmit}>
-          <Text style={styles.signInButton}>Ingresar</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={handlePassRecover}>
+          <Text style={styles.button}>Recuperar</Text>
         </TouchableOpacity>
       </View>
     </LinearGradient>
@@ -135,60 +132,39 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 30, // Añadido para dar algo de margen en los lados
+    padding: 20,
   },
   title: {
-    fontSize: 25,
-    marginVertical: 20,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#fff", // Cambiado a blanco para que sea visible sobre el gradiente
+    fontSize: 30,
+    color: "#fff",
+    marginBottom: 50,
   },
   inputContainer: {
-    marginBottom: 20, // Añadido para dar algo de espacio entre los campos
+    width: "100%",
+    marginBottom: 15,
   },
   label: {
-    fontSize: 17,
-    color: "#fff", // Cambiado a blanco para que sea visible sobre el gradiente
+    fontSize: 20,
+    color: "#fff",
     marginBottom: 10,
   },
   input: {
     backgroundColor: "#fff",
-    borderRadius: 8,
-    height: 40,
-    width: 300, // Cambiado para que ocupe todo el espacio disponible
-    paddingHorizontal: 10, // Añadido para dar algo de margen a la izquierda del texto
+    borderRadius: 5,
+    height: 45,
+    paddingHorizontal: 15,
+    fontSize: 18,
   },
-  recoverContainer: {
-    alignItems: "center", // Centrado horizontal
-    marginBottom: 20, // Añadido para dar algo de espacio después del botón de recuperación
-  },
-  recoverButton: {
-    backgroundColor: "#26697B",
-    fontSize: 15,
-    marginTop: 5,
-    color: "#6FD3C3",
-    borderRadius: 50,
-    width: 85,
-    height: 23,
-    textAlign: "center",
-    fontWeight: "bold",
-    justifyContent: "center", // Añadido para centrar verticalmente
-  },
-  signInContainer: {
-    alignItems: "center", // Centrado horizontal
-  },
-  signInButton: {
-    backgroundColor: "#26697B",
+  button: {
     fontSize: 20,
-    marginTop: 25,
     color: "#6FD3C3",
-    borderRadius: 50,
-    width: 115,
-    height: 30,
+    marginTop: 25,
     textAlign: "center",
     fontWeight: "bold",
-    justifyContent: "center", // Añadido para centrar verticalmente
+  },
+  buttonContainer: {
+    width: "100%",
+    alignItems: "center",
   },
 });
 
