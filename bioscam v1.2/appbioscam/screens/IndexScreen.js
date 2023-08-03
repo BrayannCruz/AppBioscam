@@ -1,75 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
-  TextInput,
-  Button,
-  Alert,
   StyleSheet,
+  Modal,
+  ScrollView,
   Dimensions,
   Image,
+  BackHandler,
 } from "react-native";
-
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
-import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
-import * as AuthSession from "expo-auth-session";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "../firebaseConfig";
-import { Ionicons } from "@expo/vector-icons";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Home from "./TabsScreens/HomeScreen";
-import CreateUser from "./CreateUserScreen";
+import { useNavigation } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-
-WebBrowser.maybeCompleteAuthSession();
 
 const { width, height } = Dimensions.get("window");
 
 function LoginScreen() {
-  const [userInfo, setUserInfo] = React.useState(null);
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId:
-      "862986853928-2nvkki7n9552lult323k3vmm4v8esttf.apps.googleusercontent.com",
-    iosClientId:
-      "862986853928-v9d1o2bkk5e8fp0medkmpjf02rfvqth9.apps.googleusercontent.com",
-    webClientId:
-      "862986853928-c69p4mdpt2r0v3f86c6kh29ne81jl78d.apps.googleusercontent.com",
-    expoClientId:
-      "862986853928-c69p4mdpt2r0v3f86c6kh29ne81jl78d.apps.googleusercontent.com",
-  });
-  const [accessToken, setAccessToken] = React.useState();
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [showInputs, setShowInputs] = useState(false);
-  const [auth, setAuth] = useState();
-  const [requireRefresh, setRequireRefresh] = useState(false);
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [privacyPolicy, setPrivacyPolicy] = React.useState("");
   const navigation = useNavigation();
-  const app = initializeApp(firebaseConfig);
 
-  const logout = async () => {
-    await AuthSession.revokeAsync(
+  useEffect(() => {
+    fetch(
+      "https://gist.githubusercontent.com/LA0127/5bab97a8d49f61a5bb667d272ef9d672/raw/55de7b8c063210355b5d257ef1ec14febd18e052/txt",
       {
-        token: auth.accessToken,
-      },
-      {
-        revocationEndpoint: "https://oauth2.googleapis.com/revoke",
+        headers: {
+          Accept: "application/vnd.github.v3+json",
+        },
       }
-    );
+    )
+      .then((response) => response.text())
+      .then((data) => {
+        setPrivacyPolicy(data);
+      });
+  }, []);
 
-    setAuth(undefined);
-    setUserInfo(undefined);
-    await AsyncStorage.removeItem("auth");
+  const acceptPrivacy = () => {
+    setModalVisible(false);
+  };
+
+  const rejectPrivacy = () => {
+    setModalVisible(false);
+    BackHandler.exitApp();
   };
 
   const handleCreateAccount = () => {
@@ -80,47 +54,63 @@ function LoginScreen() {
     navigation.navigate("Ingresar");
   };
 
-  React.useEffect(() => {
-    (async function fetchUser() {
-      await handleGoogleSignIn();
-    })();
-  }, [response]);
-
-  async function handleGoogleSignIn() {
-    const user = await AsyncStorage.getItem("@user");
-    if (!user) {
-      if (response?.type === "success") {
-        await getUserInfo(response.authentication.accessToken);
-      }
-      await getUserInfo();
-    } else {
-      setUserInfo(JSON.parse(user));
-    }
-  }
-  const getUserInfo = async (token) => {
-    if (!token) return;
-    try {
-      const response = await fetch(
-        "https://www.googleapis.com/userinfo/v2/me",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      const user = await response.json();
-      await AsyncStorage.setItem("@user", JSON.stringify(user));
-      setUserInfo(user);
-    } catch (error) {}
-  };
-
   return (
     <SafeAreaProvider>
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <ScrollView>
+              <Text
+                style={{
+                  color: "#0F0F0F",
+                  fontWeight: "bold",
+                  fontSize: 13,
+                  fontStyle: "italic",
+                }}
+              >
+                {privacyPolicy}
+              </Text>
+            </ScrollView>
+
+            <TouchableOpacity
+              style={{ backgroundColor: "#0D819D", top: 10, borderRadius: 20, width: 100 }}
+              onPress={acceptPrivacy}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: 18,
+                  fontStyle: "italic",
+                }}
+              >
+                Aceptar
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ backgroundColor: "#0D819D", top: 20, borderRadius: 20, width: 100}}
+              onPress={rejectPrivacy}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: 18,
+                  fontStyle: "italic",
+                }}
+              >
+                Rechazar
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <View style={styles.container}>
         <LinearGradient
-          // Style del contenedor
           style={styles.background}
-          // Colores del gradiente
           colors={["#C9E8E0", "#82D0B9"]}
-          // Posición de inicio y fin
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1.8 }}
         >
@@ -141,42 +131,21 @@ function LoginScreen() {
               style={styles.logo}
             />
           </View>
-          <View style={styles.login}>
-            <View>
-              <TouchableOpacity
-                onPress={handleSignInSubmit}
-                style={[styles.button, { paddingLeft: 30 }]}
-              >
-                <View style={styles.buttonContent}>
-                  <Ionicons
-                    name="person-circle-outline"
-                    size={30}
-                    color="white"
-                    bottom={10}
-                  />
-                  <Text style={styles.iniciarsesionCC}>
-                    Correo y Contraseña
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                title={auth ? "Get User Data" : "Login"}
-                onPress={() => promptAsync()}
-                style={[styles.button, { paddingLeft: 30 }]}
-              >
-                <View style={styles.buttonContent}>
-                  <Ionicons
-                    name="logo-google"
-                    size={30}
-                    color="white"
-                    bottom={10}
-                  />
-                  <Text style={styles.iniciarsesionCC}>Cuenta de Google</Text>
-                </View>
-              </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              onPress={handleSignInSubmit}
+              style={styles.button}
+            >
+              <Ionicons
+                name="person-circle-outline"
+                size={30}
+                color="white"
+              />
+              <Text style={styles.buttonText}>Iniciar Sesión</Text>
+            </TouchableOpacity>
             </View>
             <View style={styles.signUpContainer}>
-              <Text style={styles.signUpText}>¿Aun no tiene Cuenta?</Text>
+              <Text style={styles.signUpText}>¿Aún no tiene Cuenta?</Text>
             </View>
             <TouchableOpacity
               onPress={handleCreateAccount}
@@ -184,7 +153,10 @@ function LoginScreen() {
             >
               <Text style={styles.createAccountText}>Registrarse</Text>
             </TouchableOpacity>
-          </View>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Text style={styles.privacyText}>Aviso de privacidad</Text>
+            </TouchableOpacity>
+          
         </LinearGradient>
       </View>
     </SafeAreaProvider>
@@ -193,16 +165,17 @@ function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "space-around",
   },
   logo: {
-    width: 220, // change to desired width
-    height: 220, // change to desired height
+    width: 220,
+    height: 220,
     alignSelf: "center",
-    borderWidth: 1, // add this line
+    borderWidth: 1,
     borderRadius: 80,
     marginTop: 45,
   },
-background: {
+  background: {
     position: "absolute",
     left: 0,
     right: 0,
@@ -218,60 +191,68 @@ background: {
     alignSelf: "center",
     marginTop: 100,
   },
-  login: {
-    width: "100%", // Ajusta el ancho en función del tamaño de la pantalla
-    alignItems: "center", 
+  buttonContainer: {
+    alignSelf: "center",
+    marginTop: 300,
   },
   button: {
-    backgroundColor: "#0D819D",
-    marginBottom: 10,
-    borderRadius: 20,
-    paddingTop: 20,
-    top: 300,
-  },
-  iniciarsesionCC: {
-    color: "#FFFFFF",
-    fontSize: 15,
-    paddingLeft: 35,
-    bottom: 10,
-  },
-  signInContainer: {
-    alignContent: "center",
-    alignItems: "center",
-    marginVertical: 80,
-  },
-  signInText: {
-    fontSize: 25,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  buttonContent: {
-    width: 250,
-    height: 30,
     flexDirection: "row",
-    alignItems: "center",
-  },
-  signUpContainer: {
-    alignSelf: "center",
-    paddingTop: 30,
-    marginTop: 350,
-  },
-  signUpText: {
-    fontSize: 14,
-    fontWeight: "400",
-    textAlign: "center",
-  },
-  createAccountButton: {
-    alignSelf: "center",
-    width: 120,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 20, // Añadido margen en la parte superior
+    backgroundColor: "#0D819D",
+    borderRadius: 20,
+    width: 200,
+    height: 50,
+    padding: 10,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    marginLeft: 10,
+    fontSize: 18,
+  },
+  signUpContainer: {
+    alignItems: "center",
+    alignSelf: "center",
+    marginTop: 160,
+  },
+  signUpText: {
+    color: "#F0F0F0",
+    fontSize: 20,
+  },
+  createAccountButton: {
+    marginTop: 10,
   },
   createAccountText: {
-    fontSize: 18,
-    fontWeight: "500",
-    color: "#E02B2B",
+    alignSelf: "center",
+    color: "#FF0000",
+    fontSize: 20,
+  },
+  privacyText: {
+    color: "#0F0F0F",
+    fontSize: 15,
+    paddingTop: 10,
+    alignSelf: "center",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });
 

@@ -60,7 +60,7 @@ export default function CapturarIcon() {
   return (
     <LinearGradient colors={["#84DCC6", "#1C2B2D"]} style={styles.inicio}>
       <CornerImages />
-      <Text style={styles.title}>Título de tu aplicación</Text>
+      <Text style={styles.title}>¡Preparate para escanear!</Text>
       <TouchableOpacity onPress={() => setIsCameraOpen(!isCameraOpen)} style={styles.btnAbrir}>
         <Text style={styles.abrir}>{isCameraOpen ? 'Cerrar cámara' : 'Abrir cámara'}</Text>
       </TouchableOpacity>
