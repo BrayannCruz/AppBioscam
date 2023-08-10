@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "appbioscam",
-    "slug": "appbioscam",
+    "name": "Bioscam",
+    "slug": "Bioscam",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#C9E8E0"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -28,12 +28,12 @@
       "permissions": ["CAMERA"],
       "package": "com.bioscamapp.appbioscam",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#C9E8E0"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logo.png"
     },
     "scheme":"appbioscam"
   }

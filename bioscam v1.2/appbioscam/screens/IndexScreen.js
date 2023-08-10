@@ -1,26 +1,66 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  Modal,
+  TextInput,
+  Button,
+  Alert,
   ScrollView,
+  StyleSheet,
+  BackHandler,
   Dimensions,
   Image,
-  BackHandler,
+  Modal,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import base64 from "base-64";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import * as AuthSession from "expo-auth-session";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from "../firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Home from "./TabsScreens/HomeScreen";
+import CreateUser from "./CreateUserScreen";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const { width, height } = Dimensions.get("window");
 
 function LoginScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [privacyPolicy, setPrivacyPolicy] = React.useState("");
+  const [userInfo, setUserInfo] = React.useState(null);
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId:
+      "862986853928-2nvkki7n9552lult323k3vmm4v8esttf.apps.googleusercontent.com",
+    iosClientId:
+      "862986853928-v9d1o2bkk5e8fp0medkmpjf02rfvqth9.apps.googleusercontent.com",
+    webClientId:
+      "862986853928-c69p4mdpt2r0v3f86c6kh29ne81jl78d.apps.googleusercontent.com",
+    expoClientId:
+      "862986853928-c69p4mdpt2r0v3f86c6kh29ne81jl78d.apps.googleusercontent.com",
+  });
+  const [accessToken, setAccessToken] = React.useState();
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [showInputs, setShowInputs] = useState(false);
+  const [auth, setAuth] = useState();
+  const [requireRefresh, setRequireRefresh] = useState(false);
   const navigation = useNavigation();
+  const app = initializeApp(firebaseConfig);
+  const [privacyPolicy, setPrivacyPolicy] = useState("");
 
   useEffect(() => {
     fetch(
@@ -35,7 +75,23 @@ function LoginScreen() {
       .then((data) => {
         setPrivacyPolicy(data);
       });
-  }, []);
+}, []);
+
+
+  const logout = async () => {
+    await AuthSession.revokeAsync(
+      {
+        token: auth.accessToken,
+      },
+      {
+        revocationEndpoint: "https://oauth2.googleapis.com/revoke",
+      }
+    );
+
+    setAuth(undefined);
+    setUserInfo(undefined);
+    await AsyncStorage.removeItem("auth");
+  };
 
   const acceptPrivacy = () => {
     setModalVisible(false);
@@ -43,7 +99,7 @@ function LoginScreen() {
 
   const rejectPrivacy = () => {
     setModalVisible(false);
-    BackHandler.exitApp();
+    BackHandler.exitApp(); // ensure BackHandler is imported from react-native
   };
 
   const handleCreateAccount = () => {
@@ -54,6 +110,37 @@ function LoginScreen() {
     navigation.navigate("Ingresar");
   };
 
+  React.useEffect(() => {
+    (async function fetchUser() {
+      await handleGoogleSignIn();
+    })();
+  }, [response]);
+
+  async function handleGoogleSignIn() {
+    const user = await AsyncStorage.getItem("@user");
+    if (!user) {
+      if (response?.type === "success") {
+        await getUserInfo(response.authentication.accessToken);
+      }
+      await getUserInfo();
+    } else {
+      setUserInfo(JSON.parse(user));
+    }
+  }
+  const getUserInfo = async (token) => {
+    if (!token) return;
+    try {
+      const response = await fetch(
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const user = await response.json();
+      await AsyncStorage.setItem("@user", JSON.stringify(user));
+      setUserInfo(user);
+    } catch (error) {}
+  };
   return (
     <SafeAreaProvider>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
@@ -109,8 +196,11 @@ function LoginScreen() {
       </Modal>
       <View style={styles.container}>
         <LinearGradient
+          // Style del contenedor
           style={styles.background}
+          // Colores del gradiente
           colors={["#C9E8E0", "#82D0B9"]}
+          // Posición de inicio y fin
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1.8 }}
         >
@@ -126,26 +216,44 @@ function LoginScreen() {
             >
               BIOSCAM
             </Text>
-            <Image
-              source={require("../assets/logo.png")}
-              style={styles.logo}
-            />
+            <Image source={require("../assets/logo.png")} style={styles.logo} />
           </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              onPress={handleSignInSubmit}
-              style={styles.button}
-            >
-              <Ionicons
-                name="person-circle-outline"
-                size={30}
-                color="white"
-              />
-              <Text style={styles.buttonText}>Iniciar Sesión</Text>
-            </TouchableOpacity>
+          <View style={styles.login}>
+            <View>
+              <TouchableOpacity
+                onPress={handleSignInSubmit}
+                style={[styles.button, { paddingLeft: 30 }]}
+              >
+                <View style={styles.buttonContent}>
+                  <Ionicons
+                    name="person-circle-outline"
+                    size={30}
+                    color="white"
+                    bottom={10}
+                  />
+                  <Text style={styles.iniciarsesionCC}>
+                    Correo y Contraseña
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                title={auth ? "Get User Data" : "Login"}
+                onPress={() => promptAsync()}
+                style={[styles.button, { paddingLeft: 30 }]}
+              >
+                <View style={styles.buttonContent}>
+                  <Ionicons
+                    name="logo-google"
+                    size={30}
+                    color="white"
+                    bottom={10}
+                  />
+                  <Text style={styles.iniciarsesionCC}>Cuenta de Google</Text>
+                </View>
+              </TouchableOpacity>
             </View>
             <View style={styles.signUpContainer}>
-              <Text style={styles.signUpText}>¿Aún no tiene Cuenta?</Text>
+              <Text style={styles.signUpText}>¿Aun no tiene Cuenta?</Text>
             </View>
             <TouchableOpacity
               onPress={handleCreateAccount}
@@ -154,9 +262,11 @@ function LoginScreen() {
               <Text style={styles.createAccountText}>Registrarse</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Text style={styles.privacyText}>Aviso de privacidad</Text>
+              <Text style={{ textAlign: "center", marginTop: 20 }}>
+                Aviso de privacidad
+              </Text>
             </TouchableOpacity>
-          
+          </View>
         </LinearGradient>
       </View>
     </SafeAreaProvider>
@@ -165,13 +275,12 @@ function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-around",
   },
   logo: {
-    width: 220,
-    height: 220,
+    width: 220, // change to desired width
+    height: 220, // change to desired height
     alignSelf: "center",
-    borderWidth: 1,
+    borderWidth: 1, // add this line
     borderRadius: 80,
     marginTop: 45,
   },
@@ -191,47 +300,67 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 100,
   },
-  buttonContainer: {
-    alignSelf: "center",
-    marginTop: 300,
+  login: {
+    width: "100%", // Ajusta el ancho en función del tamaño de la pantalla
+    alignItems: "center",
   },
   button: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "#0D819D",
+    marginBottom: 10,
     borderRadius: 20,
-    width: 200,
-    height: 50,
-    padding: 10,
+    paddingTop: 20,
+    top: 300,
   },
-  buttonText: {
+  iniciarsesionCC: {
     color: "#FFFFFF",
-    marginLeft: 10,
-    fontSize: 18,
+    fontSize: 15,
+    paddingLeft: 35,
+    bottom: 10,
+  },
+  signInContainer: {
+    alignContent: "center",
+    alignItems: "center",
+    marginVertical: 80,
+  },
+  signInText: {
+    fontSize: 25,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  buttonContent: {
+    width: 250,
+    height: 30,
+    flexDirection: "row",
+    alignItems: "center",
   },
   signUpContainer: {
-    alignItems: "center",
     alignSelf: "center",
-    marginTop: 160,
+    paddingTop: 30,
+    marginTop: 350,
   },
   signUpText: {
-    color: "#F0F0F0",
-    fontSize: 20,
+    fontSize: 14,
+    fontWeight: "400",
+    textAlign: "center",
   },
   createAccountButton: {
-    marginTop: 10,
+    alignSelf: "center",
+    width: 120,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20, // Añadido margen en la parte superior
   },
   createAccountText: {
-    alignSelf: "center",
-    color: "#FF0000",
-    fontSize: 20,
+    fontSize: 18,
+    fontWeight: "500",
+    color: "#E02B2B",
   },
-  privacyText: {
-    color: "#0F0F0F",
-    fontSize: 15,
-    paddingTop: 10,
+  modalView: {
+    width: 300,
+    height: 490,
     alignSelf: "center",
+    backgroundColor: "#C9E8E0",
+    top: 60
   },
   centeredView: {
     flex: 1,
@@ -249,11 +378,7 @@ const styles = StyleSheet.create({
     shadowOffset: {
       width: 0,
       height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
+    }},
 });
 
 export default LoginScreen;

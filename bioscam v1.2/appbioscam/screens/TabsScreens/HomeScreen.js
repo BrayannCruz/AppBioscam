@@ -15,33 +15,94 @@ const images = [
   {
     id: 1,
     source: {
-      uri: "https://github.com/LA0127/ACWEB/blob/master/COYOTE1.jpg?raw=true",
+        uri: "https://firebasestorage.googleapis.com/v0/b/appbioscam.appspot.com/o/imagenes%2Fimagenesrnc%2Fvalidation%2FAguilaReal%2FAR_10.jpg?alt=media&token=a685c13a-6f48-4590-a864-d04863adbb1a",
     },
-    name: "Coyote",
-    habitat: "Norte y Centroamérica",
+    name: "Águila Real",
+    habitat: "América del Norte, Europa y Asia",
     status: "Menor preocupación",
-    funFact: "Son excelentes corredores.",
-  },
-  {
+    funFact: "Es el ave nacional de México.",
+},
+{
     id: 2,
     source: {
-      uri: "https://github.com/LA0127/ACWEB/blob/master/AJOLOTE3.jpg?raw=true",
+        uri: "https://firebasestorage.googleapis.com/v0/b/appbioscam.appspot.com/o/imagenes%2Fimagenesrnc%2Fvalidation%2FAjolote%2FAjo_106.jpg?alt=media&token=e21a1c19-a4ba-4db8-bd3f-29097b5ef174",
     },
     name: "Ajolote",
     habitat: "Lagos de Xochimilco, México",
     status: "En peligro crítico",
     funFact: "Pueden regenerar partes de su cuerpo.",
-  },
-  {
+},
+{
     id: 3,
     source: {
-      uri: "https://github.com/LA0127/ACWEB/blob/master/1MAPACHETRESMARIAS.jpg?raw=true",
+        uri: "https://firebasestorage.googleapis.com/v0/b/appbioscam.appspot.com/o/imagenes%2Fimagenesrnc%2Fvalidation%2FCacomixtle%2FCac_108.jpg?alt=media&token=eba7baaa-1edd-499d-987e-3ef97c053a43",
     },
-    name: "Mapache de Tres Marías",
-    habitat: "Islas Marías, México",
+    name: "Cacomixtle",
+    habitat: "América del Norte",
+    status: "Menor preocupación",
+    funFact: "Es un excelente trepador.",
+},
+{
+    id: 4,
+    source: {
+        uri: "https://firebasestorage.googleapis.com/v0/b/appbioscam.appspot.com/o/imagenes%2Fimagenesrnc%2Fvalidation%2FGuajolote%2FGuaj_138.jpg?alt=media&token=88e20cc8-b8de-429e-907a-728d616bdf16",
+    },
+    name: "Guajolote",
+    habitat: "México",
+    status: "Menor preocupación",
+    funFact: "Fue domesticado por los indígenas mexicanos.",
+},
+{
+    id: 5,
+    source: {
+        uri: "https://firebasestorage.googleapis.com/v0/b/appbioscam.appspot.com/o/imagenes%2Fimagenesrnc%2Fvalidation%2FLoboMexicano%2FLob_167.jpg?alt=media&token=c37753f1-5415-436c-a1b4-622bcc31f66c",
+    },
+    name: "Lobo Mexicano",
+    habitat: "México y Estados Unidos del Sur",
     status: "En peligro",
-    funFact: "Es una especie endémica de las Islas Marías.",
-  },
+    funFact: "Es la subespecie más meridional del lobo gris.",
+},
+{
+    id: 6,
+    source: {
+        uri: "https://firebasestorage.googleapis.com/v0/b/appbioscam.appspot.com/o/imagenes%2Fimagenesrnc%2Fvalidation%2FPericomexicano%2FPer_108.jpg?alt=media&token=4a8e9eff-c6c3-4e44-87e0-9b03d089a82e",
+    },
+    name: "Perico Mexicano",
+    habitat: "México",
+    status: "Vulnerable",
+    funFact: "Es conocido por su colorido plumaje.",
+},
+{
+    id: 7,
+    source: {
+        uri: "https://firebasestorage.googleapis.com/v0/b/appbioscam.appspot.com/o/imagenes%2Fimagenesrnc%2Fvalidation%2FTarantula%2FTar_109.jpg?alt=media&token=df5b69e7-5286-4aea-8310-b1def66aabc0",
+    },
+    name: "Tarántula",
+    habitat: "América, África, Asia y Europa",
+    status: "Depende de la especie",
+    funFact: "Algunas pueden vivir hasta 25 años.",
+},
+{
+    id: 8,
+    source: {
+        uri: "https://firebasestorage.googleapis.com/v0/b/appbioscam.appspot.com/o/imagenes%2Fimagenesrnc%2Fvalidation%2FTeporingo%2FTep_100.jpg?alt=media&token=57ac1281-9321-4a7e-9a69-c960effea2d7",
+    },
+    name: "Teporingo",
+    habitat: "Montañas de México",
+    status: "En peligro",
+    funFact: "Es uno de los conejos más pequeños del mundo.",
+},
+{
+    id: 9,
+    source: {
+        uri: "https://firebasestorage.googleapis.com/v0/b/appbioscam.appspot.com/o/imagenes%2Fimagenesrnc%2Fvalidation%2FVivoraCascabel%2FVcas_120.jpg?alt=media&token=c5a84c35-9451-4542-86cd-6673e6b0d746",
+    },
+    name: "Víbora de Cascabel",
+    habitat: "América",
+    status: "Depende de la especie",
+    funFact: "Es conocida por su cascabel en la punta de la cola.",
+}
+
   // Agrega más imágenes según necesites...
 ];
 
