@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#C9E8E0"
+      "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -17,7 +17,12 @@
     "plugins": [
       [
         "expo-google-sign-in",
-        {"permisssions":["profile","email"]}
+        {
+          "permisssions": [
+            "profile",
+            "email"
+          ]
+        }
       ]
     ],
     "ios": {
@@ -25,7 +30,9 @@
       "bundleIdentifier": "com.bioscamapp.appbioscam"
     },
     "android": {
-      "permissions": ["CAMERA"],
+      "permissions": [
+        "CAMERA"
+      ],
       "package": "com.bioscamapp.appbioscam",
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
@@ -35,6 +42,11 @@
     "web": {
       "favicon": "./assets/logo.png"
     },
-    "scheme":"appbioscam"
+    "scheme": "appbioscam",
+    "extra": {
+      "eas": {
+        "projectId": "a0b323c4-7044-44bb-b668-701cbec5ad6d"
+      }
+    }
   }
 }
