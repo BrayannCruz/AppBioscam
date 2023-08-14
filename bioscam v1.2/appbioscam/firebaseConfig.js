@@ -1,4 +1,3 @@
-
 export const firebaseConfig = {
   apiKey: "AIzaSyCZOY4ZDQVBRkZxrnXDq0KFIxp1pvg6rog",
   webClientId:"862986853928-f6dopsv2200r3ij44glujteo71s2tr1h.apps.googleusercontent.com",

@@ -1,16 +1,22 @@
 {
   "expo": {
-    "name": "Bioscam",
-    "slug": "Bioscam",
-    "version": "1.0.0",
+    "name": "appbioscam",
+    "slug": "appbioscam",
+    "platforms": 
+      ["android",
+      "ios"],
+    "version": "1.2.20",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0A9E11"
     },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+      },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -34,6 +40,7 @@
         "CAMERA"
       ],
       "package": "com.bioscamapp.appbioscam",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#C9E8E0"
@@ -45,7 +52,8 @@
     "scheme": "appbioscam",
     "extra": {
       "eas": {
-        "projectId": "a0b323c4-7044-44bb-b668-701cbec5ad6d"
+        //"projectId": "a0b323c4-7044-44bb-b668-701cbec5ad6d",
+        "projectId": "appbioscam"
       }
     }
   }

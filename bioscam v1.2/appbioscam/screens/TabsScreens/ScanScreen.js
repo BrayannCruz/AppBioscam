@@ -14,10 +14,9 @@ import CornerImages from "./CornerImages";
 import * as MediaLibrary from "expo-media-library";
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from "expo-file-system";
 import axios from 'axios';
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
-//const API_BASE_URL = 'https://rncbioscam-production.up.railway.app/api';
+//const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = 'https://rncbioscam-production.up.railway.app/api';
 
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
@@ -56,27 +55,34 @@ export default function CapturarIcon() {
       try {
         const data = await cameraRef.current.takePictureAsync(options);
         if (!data.cancelled) {
-          // Redimensionar la imagen seleccionada a 100x100
           try {
-            // Tu código para redimensionar la imagen...
+            // Redimensionar la imagen a 100x100 píxeles
+            const resizedImage = await ImageManipulator.manipulateAsync(
+              data.uri,
+              [{ resize: { width: 100, height: 100 } }],
+              { format: ImageManipulator.SaveFormat.JPEG }
+            );
   
             // Crear un objeto FormData para enviar la imagen en el cuerpo de la solicitud
             const imageData = new FormData();
             imageData.append('imagen', {
               name: 'image.jpg',
               type: 'image/jpeg',
+              uri: resizedImage.uri, // Usar la URI de la imagen redimensionada
             });
-  
-            setData(data);
   
             // Mostrar la solicitud POST antes de enviarla a la API
             console.log('Solicitud POST a la API:', imageData);
   
-            // Llamada a la API enviando la imagen como parametro.
+            // Llamada a la API enviando la imagen como parámetro.
             try {
               console.log('Enviando solicitud POST a la API...');
               console.log(`${API_BASE_URL}/consulta_rnc`, imageData);
-              const response = await axios.post(`${API_BASE_URL}/consulta_rnc`, imageData);
+              const response = await axios.post(`${API_BASE_URL}/consulta_rnc`, imageData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              });
               console.log('Respuesta de la API:', response.data);
               setApiResponse(response.data);
               Alert.alert('¡Foto guardada!');
@@ -95,7 +101,7 @@ export default function CapturarIcon() {
         Alert.alert('Error al tomar la foto: ' + error.message);
       }
     }
-  };
+  }
 
   useEffect(() => {
     return () => {
